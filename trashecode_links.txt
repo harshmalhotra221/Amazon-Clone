@@ -1,0 +1,56 @@
+'https://links.papareact.com/f90'
+'http://chhaapdo.com/wp-content/uploads/2021/06/Logo-1536x432.png'
+'http://chhaapdo.com/wp-content/uploads/2021/06/logo-White-Website.png'
+
+/* @apply p-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200
+to-yellow-400 border border-yellow-300 rounded-sm
+focus:outline-none focus:ring-2 focus:ring-yellow-500
+active:from-yellow-500; */
+
+GOOGLE_ID=930569581109-uhis9qbsafurr87eokhagm29171jiagr.apps.googleusercontent.com
+GOOGLE_SECRET=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
+
+
+
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+    items: [],
+}
+
+export const basketSlice = createSlice({
+    name: "basket",
+    initialState,
+    reducers: {
+        // Actions
+        addToBasket: (state, action) => {
+            state.items = [...state.items, action.payload]
+        },
+        removeFromBasket: (state, action) => {
+            const index = state.items.findIndex(
+                (basketItem) => basketItem.id === action.payload.id
+            )
+
+            let newBasket = [...state.items];
+            if (index >= 0) {
+                // The item exists in the basket... remove it...
+                newBasket.splice(index, 1)
+            } else {
+                console.warn(
+                    `Can't remove product (id: ${action.payload.id}) as it's not in basket!`
+                )
+            }
+
+            state.items = newBasket;
+        },
+    }
+})
+
+export const { addToBasket, removeFromBasket } = basketSlice.actions;
+
+// Selectors - This is how we pull information from the Global store slice
+export const selectItems = (state) => state.basket.items;
+export const selectTotal = (state) => state.basket.items.reduce((total, item) => total + item.price, 0)
+
+export default basketSlice.reducer;
